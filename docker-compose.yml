@@ -11,6 +11,8 @@ services:
     links:
       - mariadb 
     hostname: boarders.com.br
+    networks:
+      - backend
   
   nginx:
     image: nginx:1.10.1-alpine
@@ -25,6 +27,7 @@ services:
       - fpm
     networks:
       - zotabox
+      - backend
     environment:
         - VIRTUAL_HOST=wordpress.matbra.com
         
@@ -36,6 +39,9 @@ services:
       - MYSQL_DATABASE=
     volumes:
     -   ./data/db:/var/lib/mysql
+    networks:
+      - backend
+      
   wpcli:
     image: wordpress:cli
     volumes:
@@ -45,7 +51,11 @@ services:
       - mariadb
     #entrypoint: wp  
     #command: "--info"
+    networks:
+      - backend
     
 networks:
   zotabox:
     external: true
+  backend:
+    driver: bridge  
